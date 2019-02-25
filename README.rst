@@ -20,9 +20,11 @@ Installing it
 Using it
 --------
 
-You can initialize exactly how you would for redis.Redis. In fact it is meant to be a drop replacement with just:
+You can initialize exactly how you would for redis.Redis.
+In fact it is meant to be a drop replacement.
 
-- Changing the import statement from
+* Change the import statement from
+
 .. code-block:: pycon
 
     >>> import redis
@@ -33,7 +35,7 @@ to
 
     >>> import ocredis
     
-- Changing the client initialization from
+* Change the client initialization from
   
 
 .. code-block:: pycon
@@ -49,6 +51,7 @@ to
 and obviously enabling OpenCensus metrics and exporters as per https://opencensus.io/exporters/supported-exporters/python/
 
 .. code-block:: pycon
+
   >>> ocredis.register_views()
 
 and the rest is trivial to use then.
