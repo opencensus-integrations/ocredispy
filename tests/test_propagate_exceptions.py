@@ -67,28 +67,19 @@ def test_ensure_exceptions_are_raised_yet_reported():
         client.get('newer')
 
     spans = span_retainer.spans()
-    assert len(spans) == 2
+    assert len(spans) == 1
 
     span0 = spans[0]
-    span1 = spans[1]
-    assert span0.name == 'redispy.Redis.execute_command'
-    assert span1.name == 'redispy.Redis.get'
+    assert span0.name == 'redispy.Redis.get'
 
     # Ensure that the span for .get is the root span.
-    assert span1.parent_span_id == None
-    assert span0.parent_span_id == span1.span_id
+    assert span0.parent_span_id == None
 
     # Now check that the top most span has a Status
-    root_span_status = span1.status
+    root_span_status = span0.status
     assert root_span_status.code == 2 # Unknown as per https://opencensus.io/tracing/span/status/#status-code-mapping
     assert root_span_status.message == 'Error 8 connecting to localhost:262144. nodename nor servname provided, or not known.'
     assert root_span_status.details == None
-
-    # Also ensure that the child span got the erraneous status recorded.
-    child_span_status = span0.status
-    assert child_span_status.code == 2 # Unknown as per https://opencensus.io/tracing/span/status/#status-code-mapping
-    assert child_span_status.message == 'Error 8 connecting to localhost:262144. nodename nor servname provided, or not known.'
-    assert child_span_status.details == None
 
     # Next let's check that stats are recorded.
     view_data_list = view_data_retainer.view_data()
@@ -106,24 +97,25 @@ def test_ensure_exceptions_are_raised_yet_reported():
     latency_view_data_list = view_data_by_name['redispy/latency']
     assert len(latency_view_data_list) > 0
 
-    calls_view_data_execute_command = calls_view_data_list[0]
+    calls_view_data_get = calls_view_data_list[0]
     latency_view_data_execute_command = latency_view_data_list[0]
 
     count_aggregation = CountAggregation()
-    view_calls_execute_command = calls_view_data_execute_command.view
+    view_calls_execute_command = calls_view_data_get.view
     assert view_calls_execute_command.aggregation.aggregation_type == count_aggregation.aggregation_type
     # assert view_calls_execute_command.aggregation.count == 1
     assert view_calls_execute_command.name == "redispy/calls"
     assert view_calls_execute_command.description == "The number of calls"
     assert view_calls_execute_command.columns == ['method', 'error', 'status']
     # calls_execute_command_tag_values = view_calls_execute_command.get_tag_values(
-    #                    calls_view_data_execute_command.columns,  view_calls_execute_command.columns)
+    #                    calls_view_data_get.columns,  view_calls_execute_command.columns)
 
-    calls_tag_values = calls_view_data_execute_command.tag_value_aggregation_data_map.keys()
+    calls_tag_values = calls_view_data_get.tag_value_aggregation_data_map.keys()
     sorted_calls_tag_values = sorted(calls_tag_values, key=lambda tag_value_tuple: tag_value_tuple[0])
-    assert len(sorted_calls_tag_values) >= 2
+    print(sorted_calls_tag_values)
+    assert len(sorted_calls_tag_values) >= 1
     assert sorted_calls_tag_values[0] == (
-                'redispy.Redis.execute_command',
+                'redispy.Redis.get',
                 'Error 8 connecting to localhost:262144. nodename nor servname provided, or not known.',
                 'ERROR',
             )
@@ -137,7 +129,7 @@ def test_ensure_exceptions_are_raised_yet_reported():
     assert view_latency_execute_command.description == "The distribution of the latencies per method"
     assert view_latency_execute_command.columns == ['method', 'error', 'status']
     # calls_execute_command_tag_values = view_calls_execute_command.get_tag_values(
-    #                    calls_view_data_execute_command.columns,  view_calls_execute_command.columns)
+    #                    calls_view_data_get.columns,  view_calls_execute_command.columns)
 
     # TODO: File a bug with OpenCensus-Python about them using strings
     # for start and endtime, instead of actual date* objects on which we

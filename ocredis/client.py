@@ -45,7 +45,7 @@ class OcRedis(redis.Redis):
     def bitcount(self, key, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.bgsave',
-                super(OcRedis, self).bgsave, key, *args, **kwargs)
+                super(OcRedis, self).bgsave, key, None, key, *args, **kwargs)
 
     def bitfield(self, key, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -55,7 +55,7 @@ class OcRedis(redis.Redis):
     def bitop(self, operation, dest, *keys):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.bitop',
-                super(OcRedis, self).bitop, None, None, operation, dest, *keys)
+                super(OcRedis, self).bitop, operation, None, operation, dest, *keys)
 
     def blpop(self, keys, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -70,7 +70,7 @@ class OcRedis(redis.Redis):
     def brpoplpush(self, src, dst, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.brpoplpush',
-                super(OcRedis, self).brpoplpush, None, None, src, ds, *args, **kwargs)
+                super(OcRedis, self).brpoplpush, src, dst, src, ds, *args, **kwargs)
 
     def bzpopmax(self, keys, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -95,7 +95,7 @@ class OcRedis(redis.Redis):
     def client_kill(self, address):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.client_kill',
-                super(OcRedis, self).client_kill, None, None, address)
+                super(OcRedis, self).client_kill, address, None, address)
 
     def client_kill_filter(self, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -115,12 +115,12 @@ class OcRedis(redis.Redis):
     def client_setname(self, name):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.client_setname',
-                super(OcRedis, self).client_setname, None, None, name)
+                super(OcRedis, self).client_setname, name, None, name)
 
     def cluster(self, cluster_arg, *args):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.cluster',
-                super(OcRedis, self).cluster, None, None, cluster_arg, *args)
+                super(OcRedis, self).cluster, cluster_arg, None, cluster_arg, *args)
 
     def config_get(self, *args, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -170,7 +170,7 @@ class OcRedis(redis.Redis):
     def delete(self, *names):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.delete',
-                super(OcRedis, self).delete, None, None, *names)
+                super(OcRedis, self).delete, names, None, *names)
 
     def dump(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -185,12 +185,7 @@ class OcRedis(redis.Redis):
     def eval(self, script, numkeys, *keys_and_args):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.eval',
-                super(OcRedis, self).eval, None, None, script, numkeys, *keys_and_args)
-
-    def execute_command(self, *args, **options):
-        return trace_and_record_stats_with_key_and_value(
-                'redispy.Redis.execute_command',
-                super(OcRedis, self).execute_command, None, None, *args, **options)
+                super(OcRedis, self).eval, script, None, script, numkeys, *keys_and_args)
 
     def evalsha(self, sha, numkeys, *keys_and_args):
         return trace_and_record_stats_with_key_and_value(
@@ -200,12 +195,12 @@ class OcRedis(redis.Redis):
     def exists(self, *names):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.exxists',
-                super(OcRedis, self).exists, None, None, *names)
+                super(OcRedis, self).exists, names, None, *names)
 
     def expire(self, name, time):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.expire',
-                super(OcRedis, self).expire,name, None, name, time)
+                super(OcRedis, self).expire, name, time, name, time)
 
     def flushall(self, asynchronous=False):
         return trace_and_record_stats_with_key_and_value(
@@ -225,12 +220,12 @@ class OcRedis(redis.Redis):
     def geohash(self, name, *values):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.geohash',
-                super(OcRedis, self).geohash, name, None, name, *values)
+                super(OcRedis, self).geohash, name, values, name, *values)
 
     def geopos(self, name, *values):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.geopos',
-                super(OcRedis, self).geopos, name, None, name, *values)
+                super(OcRedis, self).geopos, name, values, name, *values)
 
     def georadius(self, name, longitude, latitude, radius, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -240,7 +235,7 @@ class OcRedis(redis.Redis):
     def georadiusbymember(self, name, member, radius, **kwargs):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.georadiusbymember',
-                super(OcRedis, self).georadiusbymember, name, None, name, member, raidus, **kwargs)
+                super(OcRedis, self).georadiusbymember, name, member, name, member, raidus, **kwargs)
 
     def get(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -260,12 +255,12 @@ class OcRedis(redis.Redis):
     def getset(self, name, value):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.getset',
-                super(OcRedis, self).getset, name, None, name, value)
+                super(OcRedis, self).getset, name, value, name, value)
 
     def hdel(self, name, *keys):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.hdel',
-                super(OcRedis, self).hdel, name, None, name, *keys)
+                super(OcRedis, self).hdel, name, keys, name, *keys)
 
     def hexists(self, name, key):
         return trace_and_record_stats_with_key_and_value(
@@ -310,7 +305,7 @@ class OcRedis(redis.Redis):
     def hmset(self, name, mapping):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.hmset',
-                super(OcRedis, self).hmset, name, None, name, mapping)
+                super(OcRedis, self).hmset, name, mapping, name, mapping)
 
     def hscan(self, name, cursor=0, match=None, count=None):
         return trace_and_record_stats_with_key_and_value(
@@ -380,7 +375,7 @@ class OcRedis(redis.Redis):
     def linsert(self, name, where, refvalue, value):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.linsert',
-                super(OcRedis, self).linsert, name, None, name, where, refvalue, value)
+                super(OcRedis, self).linsert, name, value, name, where, refvalue, value)
 
     def llen(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -420,7 +415,7 @@ class OcRedis(redis.Redis):
     def lset(self, name, index, value):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.lset',
-                super(OcRedis, self).lset, name, None, name, index, value)
+                super(OcRedis, self).lset, name, value, name, index, value)
 
     def ltrim(self, name, start, end):
         return trace_and_record_stats_with_key_and_value(
@@ -440,7 +435,7 @@ class OcRedis(redis.Redis):
     def mget(self, keys, *args):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.mget',
-                super(OcRedis, self).mget, keys, None, keys, *args)
+                super(OcRedis, self).mget, keys, args, keys, *args)
 
     def migrate(self, host, port, keys, destination_db, timeout, copy=False, replace=False, auth=None):
         return trace_and_record_stats_with_key_and_value(
@@ -455,22 +450,17 @@ class OcRedis(redis.Redis):
     def mset(self, mapping):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.mset',
-                super(OcRedis, self).mset, None, None, mapping)
+                super(OcRedis, self).mset, mapping, None, mapping)
 
     def msetnx(self, mapping):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.msetnx',
-                super(OcRedis, self).msetnx, None, None, mapping)
+                super(OcRedis, self).msetnx, mapping, None, mapping)
 
     def object(self, infotype, key):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.object',
-                super(OcRedis, self).object, key, None, infotype, key)
-
-    def parse_response(self, connection, command_name, **options):
-        return trace_and_record_stats_with_key_and_value(
-                'redispy.Redis.parse_response',
-                super(OcRedis, self).parse_response, None, None, connection, command_name, **options)
+                super(OcRedis, self).object, infotype, key, infotype, key)
 
     def persist(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -485,7 +475,7 @@ class OcRedis(redis.Redis):
     def pfadd(self, name, *values):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.pfadd',
-                super(OcRedis, self).pfadd, name, None, name, *values)
+                super(OcRedis, self).pfadd, name, values, name, *values)
 
     def ping(self):
         return trace_and_record_stats_with_key_and_value(
@@ -500,7 +490,7 @@ class OcRedis(redis.Redis):
     def psetex(self, name, time_ms, value):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.psetex',
-                super(OcRedis, self).psetex, name, None, name, time_ms, value)
+                super(OcRedis, self).psetex, name, value, name, time_ms, value)
 
     def pttl(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -680,7 +670,7 @@ class OcRedis(redis.Redis):
     def set(self, name, value, ex=None, px=None, nx=False, xx=False):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.set',
-                super(OcRedis, self).set, name, None, name, value, ex, px, nx, xx)
+                super(OcRedis, self).set, name, value, name, value, ex, px, nx, xx)
 
     def set_response_callback(self, command, callback):
         return trace_and_record_stats_with_key_and_value(
@@ -715,7 +705,7 @@ class OcRedis(redis.Redis):
     def sinter(self, keys, *args):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.sinter',
-                super(OcRedis, self).sinter, keys, None, keys, *args)
+                super(OcRedis, self).sinter, keys, args, keys, *args)
 
     def sinterstore(self, dest, keys, *args):
         return trace_and_record_stats_with_key_and_value(
@@ -775,12 +765,12 @@ class OcRedis(redis.Redis):
     def srem(self, name, *values):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.srem',
-                super(OcRedis, self).srem, name, None, name, *values)
+                super(OcRedis, self).srem, name, values, name, *values)
 
     def sscan(self, name, cursor=0, match=None, count=None):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.sscan',
-                super(OcRedis, self).sscan, name, None, name, cursor, match, count)
+                super(OcRedis, self).sscan, name, match, name, cursor, match, count)
 
     def sscan_iter(self, name, match=None, count=None):
         return trace_and_record_stats_with_key_and_value(
@@ -820,7 +810,7 @@ class OcRedis(redis.Redis):
     def touch(self, *args):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.touch',
-                super(OcRedis, self).touch, None, None, *args)
+                super(OcRedis, self).touch, args, None, *args)
 
     def transaction(self, func, *watches, **kwargs):
         return trace_and_record_stats_with_key_and_value(
@@ -871,18 +861,13 @@ class OcRedis(redis.Redis):
                     retryCount=None, force=False, justid=False):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.xclaim',
-                super(OcRedis, self).xclaim, name, groupname, consumername, min_idle_time, message_ids,
+                super(OcRedis, self).xclaim, name, groupname, name, groupname, consumername, min_idle_time, message_ids,
                 idle, time, retryCount, force, justid)
 
     def xdel(self, name, *ids):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.xdel',
-                super(OcRedis, self).xdel, name, None, name, *ids)
-
-    def xdel(self, name, *ids):
-        return trace_and_record_stats_with_key_and_value(
-                'redispy.Redis.xdel',
-                super(OcRedis, self).xdel, name, None, name, *ids)
+                super(OcRedis, self).xdel, name, ids, name, *ids)
 
     def xgroup_create(self, name, groupname, id=u'$', mkstream=False):
         return trace_and_record_stats_with_key_and_value(
@@ -942,7 +927,7 @@ class OcRedis(redis.Redis):
     def xread(self, streams, count=None, block=None):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.xread',
-                super(OcRedis, self).xread, None, None, streams, count, block)
+                super(OcRedis, self).xread, streams, None, streams, count, block)
 
     def xreadgroup(self, groupname, consumername, streams, count=None, block=None, noack=False):
         return trace_and_record_stats_with_key_and_value(
@@ -962,7 +947,7 @@ class OcRedis(redis.Redis):
     def zadd(self, name, mapping, nx=False, xx=False, ch=False, incr=False):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.zadd',
-                super(OcRedis, self).zadd, name, None, name, mapping, nx, xx, ch, incr)
+                super(OcRedis, self).zadd, name, mapping, name, mapping, nx, xx, ch, incr)
 
     def zcard(self, name):
         return trace_and_record_stats_with_key_and_value(
@@ -1017,12 +1002,12 @@ class OcRedis(redis.Redis):
     def zrank(self, name, value):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.zrank',
-                super(OcRedis, self).zrank, name, None, name, value)
+                super(OcRedis, self).zrank, name, value, name, value)
 
     def zrem(self, name, *values):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.zrem',
-                super(OcRedis, self).zrem, name, None, name, *values)
+                super(OcRedis, self).zrem, name, values, name, *values)
 
     def zremrangebylex(self, name, min, max):
         return trace_and_record_stats_with_key_and_value(
@@ -1062,7 +1047,7 @@ class OcRedis(redis.Redis):
     def zscan(self, name, cursor=0, match=None, count=None, score_cast_func=float):
         return trace_and_record_stats_with_key_and_value(
                 'redispy.Redis.zscan',
-                super(OcRedis, self).zscan, name, cursor, match, count, score_cast_func)
+                super(OcRedis, self).zscan, name, cursor, name, cursor, match, count, score_cast_func)
 
     def zscan_iter(self, name, match=None, count=None, score_cast_func=float):
         return trace_and_record_stats_with_key_and_value(
