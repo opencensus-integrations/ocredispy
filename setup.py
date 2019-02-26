@@ -37,7 +37,7 @@ class PyTest(TestCommand):
 
 setup(
     name='ocredis',
-    version='0.0.2',
+    version='0.0.3',
     author='OpenCensus Authors',
     author_email='census-developers@googlegroups.com',
     classifiers=[
