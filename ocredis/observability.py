@@ -84,13 +84,6 @@ def register_views():
         view_manager.register_view(each_view)
 
 
-## Some extracted types for comparisons inside function "lengths"
-strType = type('')
-tupleType = type((1,2,))
-listType = type([])
-dictType = type(dict())
-
-
 def heuristical_lengths(items):
     """
     heuristical_lengths tries to deriver the lengths of the content of items.
@@ -103,18 +96,20 @@ def heuristical_lengths(items):
     d) If items has the '__len__' attribute, it'll return [len(items)]
     e) Otherwise if it can't derive the type, it'll return []
     """
-    typ = type(items)
 
-    if isinstance(typ, strType):
+    if items is None:
+        return []
+
+    elif isinstance(items, str):
         return [len(items)]
 
-    elif isinstance(typ, dictType):
+    elif isinstance(items, dict):
         return [len(items)]
 
-    elif isinstance(typ, tupleType) or isinstance(typ, listType):
+    elif isinstance(items, tuple) or isinstance(items, list):
         lengths = []
         for item in items:
-            i_lengths = lengths(item)
+            i_lengths = heuristical_lengths(item)
             lengths.extend(i_lengths)
 
         # In the best case, if len(lengths) == 0
