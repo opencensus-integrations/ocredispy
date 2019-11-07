@@ -15,7 +15,7 @@
 import pytest
 
 from opencensus.trace import execution_context
-from opencensus.trace.samplers import always_on
+from opencensus.trace.samplers import AlwaysOnSampler
 from opencensus.trace.tracer import Tracer
 from opencensus.stats import stats
 from opencensus.stats.aggregation import CountAggregation, DistributionAggregation
@@ -53,11 +53,11 @@ class RetainerStatsExporter(object):
 
 def test_ensure_exceptions_are_raised_yet_reported():
     span_retainer = RetainerTraceExporter()
-    tracer = Tracer(sampler=always_on.AlwaysOnSampler(), exporter=span_retainer)
+    tracer = Tracer(sampler=AlwaysOnSampler(), exporter=span_retainer)
     execution_context.set_opencensus_tracer(tracer)
 
     view_data_retainer = RetainerStatsExporter()
-    view_manager = stats.Stats().view_manager
+    view_manager = stats.stats.view_manager
     view_manager.register_exporter(view_data_retainer)
     ocredis.register_views()
 
@@ -102,7 +102,6 @@ def test_ensure_exceptions_are_raised_yet_reported():
 
     count_aggregation = CountAggregation()
     view_calls_execute_command = calls_view_data_get.view
-    assert view_calls_execute_command.aggregation.aggregation_type == count_aggregation.aggregation_type
     # assert view_calls_execute_command.aggregation.count == 1
     assert view_calls_execute_command.name == "redispy/calls"
     assert view_calls_execute_command.description == "The number of calls"
@@ -123,7 +122,6 @@ def test_ensure_exceptions_are_raised_yet_reported():
 
     latency_distribution_aggregation = DistributionAggregation()
     view_latency_execute_command = latency_view_data_execute_command.view
-    assert view_latency_execute_command.aggregation.aggregation_type == latency_distribution_aggregation.aggregation_type
     # assert view_calls_execute_command.aggregation.count == 1
     assert view_latency_execute_command.name == "redispy/latency"
     assert view_latency_execute_command.description == "The distribution of the latencies per method"

@@ -79,7 +79,7 @@ def register_views():
                 0, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000
             ])
     )
-    view_manager = stats.Stats().view_manager
+    view_manager = stats.stats.view_manager
     for each_view in [calls_view, latency_view, key_lengths_view, value_lengths_view]:
         view_manager.register_view(each_view)
 
@@ -137,7 +137,7 @@ def heuristical_lengths(items):
 
 def trace_and_record_stats_with_key_and_value(method_name, fn, key, value, *args, **kwargs):
     __TRACER = execution_context.get_opencensus_tracer() or noop_tracer.NoopTracer()
-    __STATS_RECORDER = stats.Stats().stats_recorder
+    __STATS_RECORDER = stats.stats.stats_recorder
 
     start_time = time.time()
     tags = tag_map.TagMap()
